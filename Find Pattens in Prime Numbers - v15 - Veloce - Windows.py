@@ -63,6 +63,8 @@ global starting_number
 starting_number = 29
 global iterations_number
 iterations_number = 10
+global slides_number
+slides_number = 3
 global numero_passi
 numero_passi = 0
 global numero_lati
@@ -467,9 +469,12 @@ def save_as_png():  # thanks to the John Elder's course on Udemy!!!
         # messagebox.showinfo("Image Saved", "You Image Has Been Saved!")
         messagebox.showinfo("Image Saved", "L'immagine è stata salvata con successo!")
 
+
 global numero_diapositiva, is_possible_to_save
 numero_diapositiva = 0
 is_possible_to_save = False
+
+
 def save_automatic_photo():
     global starting_number, updated_starting_number, speed_turtle, color_pen, numero_diapositiva, numero_passi, is_possible_to_save, numero_lati, color_prime, canvas_color
 
@@ -509,7 +514,6 @@ def save_automatic_photo():
 
     result = f"slides/automatic_photo_sides_{numero_lati}_starting_number_{starting_number}.png";
 
-
     if is_possible_to_save:
         if result:
             x = root.winfo_rootx() + my_canvas.winfo_x()
@@ -525,6 +529,15 @@ def save_automatic_photo():
     label_entry_numero.config(text=f"Starting Number is: {starting_number}")
     entry_numero.delete(0, END)
     entry_numero.insert(0, starting_number)
+
+
+def change_number_slides(*args):
+    global slides_number
+    sound_click_special.play()
+    slides_number = int(entry_slides.get())
+    label_entry_slides.config(text=f"Number of slides: {slides_number}")
+    print(slides_number)
+
 
 # Button to change the color of prime numbers
 change_color_prime_numbers = Button(frame_right, text="Prime Color", command=change_prime_color, width=10)
@@ -575,7 +588,6 @@ speed_turtle_label.grid(row=5, column=1, padx=10, pady=10, sticky=W)
 speed_turtle_label2 = Label(frame_right, text=f"", font=('Helvetica', 12))
 speed_turtle_label2.grid(row=5, column=2, padx=10, pady=10, sticky=W)
 
-
 # Entry per il numero di partenza
 entry_numero = Entry(frame_right, font=("Helvetica", 14), width=10)
 entry_numero.insert(0, starting_number)
@@ -600,23 +612,35 @@ button_entry_iterations.grid(row=7, column=1, padx=10, pady=10, sticky=W)
 label_entry_iterations = Label(frame_right, text=f"Iterations Number: {iterations_number}", font=("Helvetica", 14))
 label_entry_iterations.grid(row=7, column=2, padx=10, pady=10, sticky=W)
 
+# Entry per il numero di slides da generare
+entry_slides = Entry(frame_right, font=("Helvetica", 14), width=10)
+entry_slides.insert(0, 3)
+entry_slides.bind('<Return>', change_number_slides)
+entry_slides.grid(row=8, column=0, padx=10, pady=10, sticky=W)
+# Bottone per configurare il numero di slides
+button_entry_slides = Button(frame_right, text="Insert", command=change_number_slides, width=10)
+button_entry_slides.grid(row=8, column=1, padx=10, pady=10, sticky=W)
+# Label per il numero di slides
+label_entry_slides = Label(frame_right, text=f"Number of slides: {slides_number}", font=("Helvetica", 14))
+label_entry_slides.grid(row=8, column=2, padx=10, pady=10, sticky=W)
+
 # update() insieme a tracer(0,0) vedi le prime righe permette di visualizzare l'immagine in una sola volta senza animazioni
 # importante: devo eliminare done() alla fine, altrimenti apre un'altra finestra di turtle
 # done()
 
 # Label per l'aggiornamento del numero
 label_processed_number = Label(frame_right, text=f"Number now is: {starting_number}", font=("Helvetica", 14))
-label_processed_number.grid(row=8, column=0, columnspan=3, padx=10, pady=10, sticky=W)
+label_processed_number.grid(row=9, column=0, columnspan=3, padx=10, pady=10, sticky=W)
 
 # pulsante per salvare l'immagine
 save_as_png_btn = Button(frame_right, image=photo_camera, command=save_as_png, borderwidth=0)
-save_as_png_btn.grid(row=9, column=0, padx=10, pady=10, sticky=W)
+save_as_png_btn.grid(row=10, column=0, padx=10, pady=10, sticky=W)
 
 save_automatic_photo_btn = Button(frame_right, image=photo_camera, command=save_automatic_photo, borderwidth=0)
-save_automatic_photo_btn.grid(row=9, column=1, padx=10, pady=10, sticky=W)
+save_automatic_photo_btn.grid(row=10, column=1, padx=10, pady=10, sticky=W)
 
-for i in range(10):
-    save_automatic_photo()
+# for i in range(10):
+#     save_automatic_photo()
 
 screen.update()
 root.mainloop()
