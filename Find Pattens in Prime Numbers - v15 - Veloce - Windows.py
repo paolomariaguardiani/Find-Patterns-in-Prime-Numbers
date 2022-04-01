@@ -8,14 +8,7 @@
 #       Deo Gratias!            #
 #################################
 
-# todo: pulsante per riposizionare al centro del canvas la tartaruga
-# fatto: slider per selezionare il numero di lati del poligono
-# todo: aggiungere labels per gli sliders
-# todo: entry per inserire il numero di partenza
-# todo: inserire bottone per salvare in formato png
-# todo: aggiungere la possibilità di colorare in modo diverso i twin prime numbers
-# fatto: eliminare la seconda finestra di turtle
-
+# TODO: nel titolo automatico devono comparire il numero dei lati, il numero di partenza (magari al fondo in modo che faccia da counter)
 
 # Ho trovato la funzione per trovare numeri primi sul sito:
 # http://www.batmath.it/js/primo/primo.htm
@@ -53,7 +46,7 @@ print(test_number)
 root = Tk()
 root.title("Find Patterns in Prime Numbers")
 root.iconbitmap('immagini/logo_di_paolo.ico')
-root.geometry("1500x980")
+root.geometry("1500x980+25+0")
 
 pygame.mixer.init()
 sound_photo = mixer.Sound('suoni/take_a_photo.wav')
@@ -474,6 +467,64 @@ def save_as_png():  # thanks to the John Elder's course on Udemy!!!
         # messagebox.showinfo("Image Saved", "You Image Has Been Saved!")
         messagebox.showinfo("Image Saved", "L'immagine è stata salvata con successo!")
 
+global numero_diapositiva, is_possible_to_save
+numero_diapositiva = 0
+is_possible_to_save = False
+def save_automatic_photo():
+    global starting_number, updated_starting_number, speed_turtle, color_pen, numero_diapositiva, numero_passi, is_possible_to_save, numero_lati, color_prime, canvas_color
+
+    is_possible_to_save
+    numero_iniziale = starting_number
+
+    # cancello tutto dallo schermo
+    clear_canvas()
+
+    numero_diapositiva += 1
+
+    # setto la velocità al massimo senza animazioni
+    speed_turtle = 0;
+    # cambio il numero nell'etichetta della slider bar
+    speed_turtle_label.config(text="No Aminations")
+    speed_turtle_label2.config(text="Please Wait!")
+
+    # faccio partire l'animazione
+    print(numero_lati)
+    t.shape('arrow')
+    t.showturtle()
+    t.pencolor(color_pen)
+    for i in range(iterations_number):
+        for i in range(numero_lati - 2):  # numero_lati - 2
+            for i in range(1, numero_passi):
+                if libCalc.trova_numeri_primi(numero_iniziale) == 1:
+                    t.dot(turtle_pen_size, color_prime)
+                else:
+                    t.dot(turtle_pen_size, color_normal_number)
+                t.forward(turtle_forward)
+                numero_iniziale += 1
+                label_processed_number.config(text=f"Number now is: {numero_iniziale}")
+            t.left(360 / numero_lati)
+        numero_passi += 1
+    t.hideturtle()
+    is_possible_to_save = True
+
+    result = f"slides/automatic_photo_sides_{numero_lati}_starting_number_{starting_number}.png";
+
+
+    if is_possible_to_save:
+        if result:
+            x = root.winfo_rootx() + my_canvas.winfo_x()
+            y = root.winfo_rooty() + my_canvas.winfo_y()
+            x1 = x + my_canvas.winfo_width()
+            y1 = y + my_canvas.winfo_height()
+            ImageGrab.grab().crop((x, y, x1, y1)).save(result)
+
+    sound_photo.play();
+    # aumento di una unità il numero di partenza
+    starting_number = starting_number + 1
+    updated_starting_number = starting_number
+    label_entry_numero.config(text=f"Starting Number is: {starting_number}")
+    entry_numero.delete(0, END)
+    entry_numero.insert(0, starting_number)
 
 # Button to change the color of prime numbers
 change_color_prime_numbers = Button(frame_right, text="Prime Color", command=change_prime_color, width=10)
@@ -559,7 +610,13 @@ label_processed_number.grid(row=8, column=0, columnspan=3, padx=10, pady=10, sti
 
 # pulsante per salvare l'immagine
 save_as_png_btn = Button(frame_right, image=photo_camera, command=save_as_png, borderwidth=0)
-save_as_png_btn.grid(row=9, column=0, columnspan=3, padx=10, pady=10, sticky=W)
+save_as_png_btn.grid(row=9, column=0, padx=10, pady=10, sticky=W)
+
+save_automatic_photo_btn = Button(frame_right, image=photo_camera, command=save_automatic_photo, borderwidth=0)
+save_automatic_photo_btn.grid(row=9, column=1, padx=10, pady=10, sticky=W)
+
+for i in range(10):
+    save_automatic_photo()
 
 screen.update()
 root.mainloop()
